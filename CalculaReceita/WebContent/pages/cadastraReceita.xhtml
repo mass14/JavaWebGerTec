@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/pages/template.xhtml"> 
+<h:head></h:head> 
+<body>
+<ui:define name="conteudo"> 
+	<h:form>
+		<p:panelGrid columns="2" id="gridReceita">
+			<h:outputText value="Id: " />
+			<h:outputText value="#{receitaMB.receita.id}" />
+			
+			<h:outputText value="Nome: " />
+			<h:inputText id="inNome" value="#{receitaMB.receita.nome}" />
+			
+			<h:outputText value="Tempo de Preparo em Minutos: " />
+			<h:inputText id="inTempoPreparo" value="#{receitaMB.receita.tempoPreparo}" />
+			
+			<h:outputText value="---"/>
+			<h:outputText value="Valor da Mão de Obra por hora de Trabalho"/>
+			
+			<h:outputText value="Mão de Obra por hora: " />
+			<h:inputText id="inValormMaoDeObraHora" value="#{receitaMB.receita.valorMaoDeObraHora}" />
+			
+			<h:outputText value="---"/>
+			<h:outputText value="Escolha a margem de Lucro"/>
+			
+			<h:outputLabel value="Porcentagem de Lucro: " />
+			<p:selectOneMenu id="inPorcentagemLucro" value="#{receitaMB.receita.porcentagemlucro}" >
+				<f:selectItem itemLabel="30%" itemValue="30"/>
+				<f:selectItem itemLabel="40%" itemValue="40"/>
+				<f:selectItem itemLabel="50%" itemValue="50"/>
+				<f:selectItem itemLabel="60%" itemValue="60"/>
+				<f:selectItem itemLabel="70%" itemValue="70"/>
+				<f:selectItem itemLabel="80%" itemValue="80"/>
+				<f:selectItem itemLabel="90%" itemValue="90"/>
+				<f:selectItem itemLabel="100%" itemValue="100"/>
+			</p:selectOneMenu>
+			
+			<p:outputLabel value="Está ativa: " />
+			<p:selectOneMenu id="inAtiva" value="#{receitaMB.receita.flAtiva}" >
+				<f:selectItem itemLabel="Sim" itemValue="true"/>
+				<f:selectItem itemLabel="Não" itemValue="false"/>
+			</p:selectOneMenu>
+
+		</p:panelGrid>
+	 	
+		<h:outputText value="------" />
+		
+		<p:panelGrid columns="2" id="gridIngrediente">
+			<h:outputText value="Nome: " />
+			<h:inputText value="#{receitaMB.ingrediente.nome}" />
+			
+			<h:outputText value="Marca: " />
+			<h:inputText value="#{receitaMB.ingrediente.marca}" />
+			
+			<h:outputText value="Fornecedor: " />
+			<h:inputText value="#{receitaMB.ingrediente.fornecedor}" />
+			
+			<h:outputText value="Valor por Unidade: " />
+			<h:inputText value="#{receitaMB.ingrediente.valorUnidade}" />
+			
+			<h:outputText value="Unidade de Medida : " />
+			<h:inputText value="#{receitaMB.ingrediente.unidadeMedidaCompra}" />
+			
+			<h:outputText value="Quantidade: " />
+			<h:inputText value="#{receitaMB.ingrediente.quantidade}" />
+			
+			<h:outputText value="Unidade de Medida da Receita " />
+			<h:inputText value="#{receitaMB.ingrediente.unidadeMedidaReceita}" />
+			
+		</p:panelGrid>
+		<p:commandButton actionListener="#{receitaMB.addIngrediente}" value="AddIngrediente" process="@form" update="gridIngrediente"/>
+		
+		<p:panelGrid>
+			<p:dataTable value="#{receitaMB.receita.ingredientes}" var="ing">
+				<p:column>#{ing.id}</p:column>	
+				<p:column>#{ing.nome}</p:column>
+				<p:column>#{ing.marca}</p:column>
+				<p:column>#{ing.fornecedor}</p:column>
+				<p:column>#{ing.valorUnidade}</p:column>
+				<p:column>#{ing.unidadeMedidaCompra}</p:column>
+				<p:column>#{ing.quantidade}	</p:column>
+				<p:column>#{ing.unidadeMedidaReceita}</p:column>
+				<p:column>#{ing.valorReal}</p:column>
+			</p:dataTable>
+		</p:panelGrid>
+		<p:commandButton actionListener="#{receitaMB.salvar}" value="Salvar" process="@form" update="gridReceita"/>
+		<h:commandButton action="#{receitaMB.calculaValorCusto}" value="Calcule Valor Total" type="button" onclick="PF('dlg2').show();" >
+			<f:setPropertyActionListener value="#{rec}" target="#{receitaMB.receita}" />
+			<f:ajax execute="@this" render="@form" />
+		</h:commandButton>
+					
+	<!-- Modal -->
+	<p:dialog header="Calcule o Valor total da Receita" widgetVar="dlg2" modal="true">
+        <p:panelGrid columns="2" id="confirmar">
+						<h:outputText value="Valor de Custo: " />
+						<h:outputText id="inValorDeCusto" value="#{receitaMB.receita.valorCusto}" />
+						
+						<h:outputText value="Valor de Mão de Obra Total: " />
+						<h:outputText id="inValorDeMaoDeObra" value="#{receitaMB.receita.valorMaoDeObra}" />
+						
+						<h:commandButton action="#{receitaMB.receita.calculaValorVenda()}"  value="Calcule Valor Total" type="button" >	
+							<f:setPropertyActionListener value="#{rec}" target="#{receitaMB.receita}" />
+							<f:ajax execute="@this" render="confirmar" />
+						</h:commandButton>
+						<h:outputText value="" />
+						
+						<h:outputText value="Valor de Venda: " />
+						<h:inputText id="inValorDeVenda" value="#{receitaMB.receita.valorVenda}" />	
+						
+						 <h:outputLabel for="ajax" value="Muda Valor de Venda:" />
+        					<p:inplace id="ajax" editor="true">
+          					  <p:inputText value="#{receitaMB.receita.valorVenda}" required="true" label="text" />
+       					 </p:inplace>
+							
+						<h:commandButton value="fechar" type="button" onclick="PF('dlg2').hide();">	
+							<f:setPropertyActionListener value="#{rec}" target="#{receitaMB.receita}" />
+							<f:ajax execute="@this" render="@form" />
+						</h:commandButton>			
+		</p:panelGrid>
+	</p:dialog>
+		</h:form>
+	</ui:define>
+</body> 
+</ui:composition>

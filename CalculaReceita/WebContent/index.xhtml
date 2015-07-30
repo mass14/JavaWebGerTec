@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Locadora - Login</title>
+
+	<h:outputStylesheet library="css" name="style.css" />
+
+</h:head>
+
+<h:body>
+	<h:form>
+		<h:panelGrid columns="2" >
+			<h:commandLink action="#{i18nMB.mudarIdioma}">
+				<h:graphicImage url="img/br.png" width="30" height="30" />
+				<f:setPropertyActionListener target="#{i18nMB.linguagem}" value="pt" />
+				<f:setPropertyActionListener target="#{i18nMB.pais}" value="BR" />
+				<f:ajax execute="@this" render="@all" />
+			</h:commandLink>
+			<h:commandLink action="#{i18nMB.mudarIdioma}">
+				<h:graphicImage url="img/us.png" width="30" height="30" />
+				<f:setPropertyActionListener target="#{i18nMB.linguagem}" value="en" />
+				<f:setPropertyActionListener target="#{i18nMB.pais}" value="US" />
+				<f:ajax execute="@this" render="@all" />
+			</h:commandLink>
+		</h:panelGrid>
+	</h:form>
+	
+
+	<div class="wrapper">
+		<div class="container">
+		
+			<h1>LocaCar</h1>
+
+			<h:form styleClass="form">
+				<h:inputText a:placeholder="fill me" id="inEmail"
+					value="#{autenticacaoMB.email}" required="true"
+					requiredMessage="E-mail obrigatório!" validator="validarEmail" />
+				<h:message for="inEmail" />
+
+				<h:inputSecret id="inSenha" value="#{autenticacaoMB.senha}"
+					required="true" requiredMessage="Senha obrigatória!" />
+				<h:message for="inSenha" />
+				<h:commandButton action="#{autenticacaoMB.autentica()}"
+					value="#{i18n.entrar}" />
+			</h:form>
+		
+		</div>
+
+		<ul class="bg-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<h:outputScript library="js" name="jquery.js" />
+
+	<h:outputScript library="js" src="index.js" />
+
+
+
+
+</h:body>
+</html>
